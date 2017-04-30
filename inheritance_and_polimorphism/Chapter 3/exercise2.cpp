@@ -7,6 +7,7 @@ struct Base {
 };
 
 struct Derived : Base {
+  using Base::print;
   void print(int i) {
     std::cout << i << '\n';
   }

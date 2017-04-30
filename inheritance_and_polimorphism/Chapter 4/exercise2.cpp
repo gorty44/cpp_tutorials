@@ -1,32 +1,34 @@
 #include <iostream>
+#include <memory>
+
 
 struct CommonData {
   int i = 0;
 };
 
-struct Complement : CommonData {
+struct Complement : virtual CommonData {
   int operator~() const { return ~i; }
 };
 
-struct Negate : CommonData {
+struct Negate : virtual CommonData {
   int operator-() const { return -i; }
 };
 
 struct Int : Complement, Negate
 {
-  virtual Int *clone() {
-    return new Int(*this);
+  virtual std::unique_ptr<Int> clone() {
+    return std::make_unique<Int>(*this);
   }
-
+  virtual ~Int() = default;
   Int(const int t_i) 
   {
-    Complement::i = t_i;
+    i = t_i;
   }
 };
 
 struct MyInt : Int {
-  MyInt *clone() {
-    return new MyInt(*this);
+  std::unique_ptr<Int> clone() override {
+    return std::make_unique<Int>(*this);
   }
 };
 
